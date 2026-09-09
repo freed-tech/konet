@@ -2,9 +2,41 @@ ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / organization := "care.freed"
 ThisBuild / version      := "0.1.0-SNAPSHOT"
 
+packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
+  "Implementation-Title"     -> "konet",
+  "Implementation-Version"   -> version.value,
+  "Implementation-Vendor"    -> "care.freed",
+  "Specification-Title"      -> "konet",
+  "Specification-Version"    -> version.value,
+  "Specification-Vendor"     -> "care.freed",
+  "Created-By"               -> s"sbt ${sbtVersion.value}",
+  "Build-Jdk"                -> System.getProperty("java.version")
+)
+
 lazy val root = (project in file("."))
   .settings(
     name := "konet",
+
+    Compile / packageDoc / publishArtifact := true,
+    Compile / packageSrc / publishArtifact := true,
+
+    licenses := Seq("Proprietary" -> url("https://care.freed/licenses/internal")),
+    homepage := Some(url("https://github.com/freed-tech/konet")),
+    scmInfo  := Some(
+      ScmInfo(
+        url("https://github.com/freed-tech/konet"),
+        "scm:git:git@github.com:freed-tech/konet.git"
+      )
+    ),
+    developers := List(
+      Developer(
+        id    = "core-team",
+        name  = "Freed Tech Team",
+        email = "techsupport@freed.care",
+        url   = url("https://freed.care")
+      )
+    ),
+
     libraryDependencies ++= Seq(
       "com.squareup.okhttp3"          %  "okhttp"               % "3.13.1",
       "com.google.inject"             %  "guice"                % "4.1.0",
