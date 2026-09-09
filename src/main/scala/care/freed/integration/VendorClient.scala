@@ -1,6 +1,7 @@
 package care.freed.integration
 
-import com.google.inject.Inject
+import care.freed.integration.data.{ApiError, AuthFailure, ConnectionParams, DeserializationError, NetworkError, NetworkResponse, NetworkSuccess, RequestData}
+import care.freed.integration.internal.{HoconExecutionContextFactory, JsonMapper, WebClient, WebClientRegistry}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag

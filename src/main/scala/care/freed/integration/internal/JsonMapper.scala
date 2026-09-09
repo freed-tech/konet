@@ -1,9 +1,9 @@
-package care.freed.integration
+package care.freed.integration.internal
 
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
-object JsonMapper {
+private[integration] object JsonMapper {
   val mapper: ObjectMapper = new ObjectMapper()
     .registerModule(DefaultScalaModule)
     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

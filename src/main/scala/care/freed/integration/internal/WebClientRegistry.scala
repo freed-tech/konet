@@ -1,11 +1,12 @@
-package care.freed.integration
+package care.freed.integration.internal
 
-import com.google.inject.{Inject, Injector}
+import care.freed.integration.data.ConnectionParams
+import com.google.inject.Injector
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext
 
-object WebClientRegistry {
+private[integration] object WebClientRegistry {
   private var injector: Injector = _
 
   private val registry: TrieMap[String, WebClient] = TrieMap.empty

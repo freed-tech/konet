@@ -1,4 +1,4 @@
-package care.freed.integration
+package care.freed.integration.data
 
 import scala.util.{Failure, Success, Try}
 

@@ -1,4 +1,7 @@
-package care.freed.integration
+package care.freed.integration.defaults
+
+import care.freed.integration.WebLogger
+import care.freed.integration.data.NetworkResponse
 
 import java.util.UUID
 

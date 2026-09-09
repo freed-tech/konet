@@ -1,5 +1,4 @@
-package care.freed.integration
-
+package care.freed.integration.internal
 
 import com.typesafe.config.{Config, ConfigFactory}
 
@@ -7,7 +6,7 @@ import java.io.File
 import java.util.concurrent.{ExecutorService, LinkedBlockingQueue, ThreadPoolExecutor, TimeUnit}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService}
 
-object HoconExecutionContextFactory {
+private[integration] object HoconExecutionContextFactory {
   def create(dispatcherPath: String, fallbackPath: String = "common-client-dispatcher"): ExecutionContextExecutorService = {
     val config = ConfigFactory.parseFile(new File("/conf/application.conf"))
     val targetPath = if (config.hasPath(dispatcherPath)) dispatcherPath else fallbackPath

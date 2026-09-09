@@ -1,5 +1,6 @@
 package care.freed.integration
 
+import care.freed.integration.internal.WebClientRegistry
 import com.google.inject.{Inject, Injector, Singleton}
 
 @Singleton

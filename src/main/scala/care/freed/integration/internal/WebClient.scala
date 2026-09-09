@@ -1,7 +1,9 @@
-package care.freed.integration
+package care.freed.integration.internal
 
+import care.freed.integration.WebLogger
+import care.freed.integration.data._
 import com.google.inject.{Inject, Singleton}
-import okhttp3.{Headers, MediaType, OkHttpClient, Request, RequestBody, Response}
+import okhttp3._
 import okio.Buffer
 
 import java.util.concurrent.TimeUnit
@@ -9,7 +11,7 @@ import scala.collection.JavaConverters.mapAsJavaMapConverter
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
-class WebClient(logger: WebLogger, connectionParams: ConnectionParams, clientName: String, ec: ExecutionContext) {
+private[integration] class WebClient(logger: WebLogger, connectionParams: ConnectionParams, clientName: String, ec: ExecutionContext) {
   private val webClient = new OkHttpClient.Builder()
     .readTimeout(connectionParams.readTimeout, TimeUnit.SECONDS)
     .writeTimeout(connectionParams.writeTimeout, TimeUnit.SECONDS)
@@ -112,8 +114,6 @@ class WebClient(logger: WebLogger, connectionParams: ConnectionParams, clientNam
     NetworkSuccess(sanitisedResponseBody, code = response.code())
   }
 }
-
-case class ConnectionParams(connectionTimeout: Int = 30, readTimeout: Int = 30, writeTimeout: Int = 30)
 
 @Singleton
 class WebClientFactory @Inject()(logger: WebLogger) {
