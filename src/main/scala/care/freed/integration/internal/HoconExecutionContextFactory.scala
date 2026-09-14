@@ -1,5 +1,6 @@
 package care.freed.integration.internal
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.typesafe.config.{Config, ConfigFactory}
 
 import java.io.File
@@ -8,7 +9,7 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService}
 
 private[integration] object HoconExecutionContextFactory {
   def create(dispatcherPath: String, fallbackPath: String = "common-client-dispatcher"): ExecutionContextExecutorService = {
-    val config = ConfigFactory.parseFile(new File("/conf/application.conf"))
+    val config = ConfigFactory.parseFile(new File("conf/application.conf"))
     val targetPath = if (config.hasPath(dispatcherPath)) dispatcherPath else fallbackPath
 
     val dispatcherConfig = if (config.hasPath(targetPath)) {
@@ -17,11 +18,11 @@ private[integration] object HoconExecutionContextFactory {
       ConfigFactory.empty()
     }
 
-    val executor = createExecutorService(dispatcherConfig)
+    val executor = createExecutorService(dispatcherConfig, targetPath)
     ExecutionContext.fromExecutorService(executor)
   }
 
-  private def createExecutorService(config: Config): ExecutorService = {
+  private def createExecutorService(config: Config, path: String): ExecutorService = {
     val cores = Runtime.getRuntime.availableProcessors()
 
     val rawThreads = if (config.hasPath("fixed-pool-size")) {
@@ -38,6 +39,9 @@ private[integration] object HoconExecutionContextFactory {
 
     val boundedThreads = math.max(minThreads, math.min(maxThreads, rawThreads))
 
-    new ThreadPoolExecutor(boundedThreads, boundedThreads, 60, TimeUnit.SECONDS, new LinkedBlockingQueue[Runnable]())
+    val nameFormat = s"$path-thread-pool-%d"
+    val threadFactory = new ThreadFactoryBuilder().setNameFormat(nameFormat).build()
+
+    new ThreadPoolExecutor(boundedThreads, boundedThreads, 60, TimeUnit.SECONDS, new LinkedBlockingQueue[Runnable](), threadFactory)
   }
 }

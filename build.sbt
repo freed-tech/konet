@@ -1,5 +1,5 @@
 ThisBuild / scalaVersion := "2.12.10"
-ThisBuild / organization := "care.freed"
+ThisBuild / organization := "com.github.freed-tech"
 ThisBuild / version      := "0.1.0-SNAPSHOT"
 
 packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
@@ -16,6 +16,7 @@ packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
 lazy val root = (project in file("."))
   .settings(
     name := "konet",
+    crossPaths := false,
 
     Compile / packageDoc / publishArtifact := true,
     Compile / packageSrc / publishArtifact := true,
@@ -47,3 +48,16 @@ lazy val root = (project in file("."))
       "com.typesafe"                  %  "config"               % "1.4.3"
     )
   )
+
+ThisBuild / organization := "com.github.freed-tech"
+
+publishTo := Some(
+  "GitHub Packages" at "https://maven.pkg.github.com/freed-tech/konet"
+)
+
+credentials += Credentials(
+  "GitHub Package Registry",
+  "maven.pkg.github.com",
+  "freed-tech",
+  System.getenv("GITHUB_TOKEN") // Reads token from environment
+)
