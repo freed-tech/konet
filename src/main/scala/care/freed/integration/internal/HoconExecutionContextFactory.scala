@@ -5,9 +5,11 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 import java.io.File
 import java.util.concurrent.{ExecutorService, LinkedBlockingQueue, ThreadPoolExecutor, TimeUnit}
+import scala.collection.concurrent.TrieMap
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService}
 
 private[integration] object HoconExecutionContextFactory {
+  private val executionContextMap: TrieMap[String, ExecutionContextExecutorService] = TrieMap.empty
   def create(dispatcherPath: String, fallbackPath: String = "common-client-dispatcher"): ExecutionContextExecutorService = {
     val config = ConfigFactory.parseFile(new File("conf/application.conf"))
     val targetPath = if (config.hasPath(dispatcherPath)) dispatcherPath else fallbackPath
@@ -18,8 +20,11 @@ private[integration] object HoconExecutionContextFactory {
       ConfigFactory.empty()
     }
 
-    val executor = createExecutorService(dispatcherConfig, targetPath)
-    ExecutionContext.fromExecutorService(executor)
+    // First sees if this execution context has already been created, else creates it, and saves it
+    executionContextMap.getOrElseUpdate(targetPath, {
+      val executor = createExecutorService(dispatcherConfig, targetPath)
+      ExecutionContext.fromExecutorService(executor)
+    })
   }
 
   private def createExecutorService(config: Config, path: String): ExecutorService = {
