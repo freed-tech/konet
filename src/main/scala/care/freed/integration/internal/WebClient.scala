@@ -2,7 +2,8 @@ package care.freed.integration.internal
 
 import care.freed.integration.WebLogger
 import care.freed.integration.data._
-import com.google.inject.{Inject, Singleton}
+import com.google.inject.name.Names
+import com.google.inject.{Inject, Injector, Key, Singleton}
 import okhttp3._
 import okio.Buffer
 
@@ -116,8 +117,14 @@ private[integration] class WebClient(logger: WebLogger, connectionParams: Connec
 }
 
 @Singleton
-class WebClientFactory @Inject()(logger: WebLogger) {
+class WebClientFactory @Inject()(injector: Injector, defaultLogger: WebLogger) {
   def create(connectionParams: ConnectionParams, clientName: String, ec: ExecutionContext): WebClient = {
+    val bindingKey = Key.get(classOf[WebLogger], Names.named(clientName))
+
+    val logger = Option(injector.getExistingBinding(bindingKey)) match {
+      case Some(binding) => binding.getProvider.get()
+      case None => defaultLogger
+    }
     new WebClient(logger, connectionParams, clientName, ec)
   }
 }
