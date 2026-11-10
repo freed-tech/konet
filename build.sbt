@@ -1,6 +1,6 @@
 ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / organization := "com.github.freed-tech"
-ThisBuild / version      := "1.1.0"
+ThisBuild / version      := "1.2.0"
 
 packageOptions in (Compile, packageBin) += Package.ManifestAttributes(
   "Implementation-Title"     -> "konet",
